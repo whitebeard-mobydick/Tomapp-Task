@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Turf Booking System</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, button { margin: 5px 0; padding: 5px; }
+    .section { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; }
+    #turfs, #bookings { margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>Turf Booking System</h1>
+
+  <!-- Login Section -->
+  <div class="section">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" value="admin@turf.com"><br>
+    <button onclick="login()">Login</button>
+    <p id="loginStatus"></p>
+  </div>
+
+  <!-- Turfs Section -->
+  <div class="section">
+    <h2>Available Turfs</h2>
+    <button onclick="getTurfs()">Load Turfs</button>
+    <div id="turfs"></div>
+  </div>
+
+  <!-- Booking Section -->
+  <div class="section">
+    <h2>Create Booking</h2>
+    <input type="text" id="turfId" placeholder="Turf ID"><br>
+    <input type="datetime-local" id="start"><br>
+    <input type="datetime-local" id="end"><br>
+    <button onclick="createBooking()">Book</button>
+    <div id="bookingResult"></div>
+  </div>
+
+  <!-- Cancel Booking Section -->
+  <div class="section">
+    <h2>Cancel Booking</h2>
+    <input type="text" id="bookingId" placeholder="Booking ID"><br>
+    <button onclick="cancelBooking()">Cancel Booking</button>
+    <div id="cancelResult"></div>
+  </div>
+
+  <script>
+    let token = "";
+
+    // Login function
+    async function login() {
+      const email = document.getElementById("email").value;
+      const res = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      if (data.token) {
+        token = data.token;
+        document.getElementById("loginStatus").innerText = "Logged in!";
+      } else {
+        document.getElementById("loginStatus").innerText = data.error || "Login failed";
+      }
+    }
+
+    // Get Turfs
+    async function getTurfs() {
+      const res = await fetch("http://localhost:3000/turfs", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const turfs = await res.json();
+      let html = "";
+      turfs.forEach(t => {
+        html += `<p>ID: ${t.id} | Name: ${t.name} | Location: ${t.location} | Price: ${t.price}</p>`;
+      });
+      document.getElementById("turfs").innerHTML = html;
+    }
+
+    // Create Booking
+    async function createBooking() {
+      const turfId = document.getElementById("turfId").value;
+      const start = document.getElementById("start").value;
+      const end = document.getElementById("end").value;
+
+      const res = await fetch("http://localhost:3000/bookings", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ turfId, start, end })
+      });
+
+      const data = await res.json();
+      document.getElementById("bookingResult").innerText = JSON.stringify(data);
+    }
+
+    // Cancel Booking
+    async function cancelBooking() {
+      const bookingId = document.getElementById("bookingId").value;
+      const res = await fetch(`http://localhost:3000/bookings/${bookingId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      document.getElementById("cancelResult").innerText = JSON.stringify(data);
+    }
+  </script>
+</body>
+</html>

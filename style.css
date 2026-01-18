@@ -1,0 +1,54 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f7f7f7;
+}
+
+/* Headings */
+h1, h2 {
+    color: #333;
+}
+
+/* Inputs and buttons */
+input, button {
+    margin: 5px 0;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Buttons */
+button {
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Sections */
+.section {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+}
+
+/* Display containers */
+#turfs p, #bookingResult, #cancelResult {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Status messages */
+#loginStatus {
+    font-weight: bold;
+    color: #007BFF;
+}
